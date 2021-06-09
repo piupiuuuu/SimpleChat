@@ -12,4 +12,8 @@ public class Constants {
 
     public static final String ONLINE = "/online"; // команда для вывода списка онлайн пользователей
 
+    public static final String MESSAGE_LS = "/w"; // команда личного сообщения
+
+    public static final String MESSAGE_ALL = "/al"; // команда отправки сообщения всем пользователям
+
 }

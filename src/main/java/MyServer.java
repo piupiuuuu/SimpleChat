@@ -68,4 +68,27 @@ public class MyServer {
         }
     }
 
+    /**
+     * отправление сообщения сервером пользователю с ником nicks
+     */
+    public synchronized void broadcastMessageToClient(String message, String nick) {
+        for (ClientHandler client : clients) {
+            if (!nick.contains(client.getName())) {
+                continue;
+            }
+            client.sendMessages(message);
+        }
+    }
+
+    /**
+     * сообщение кто находится онлайн
+     */
+    public synchronized String broadcastMessageOnline() {
+        StringBuilder message = new StringBuilder("В сети: ");
+        for (ClientHandler client : clients) {
+            message.append(client.getName() + " ");
+        }
+        return message.toString();
+    }
+
 }

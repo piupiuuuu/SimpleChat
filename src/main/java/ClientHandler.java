@@ -57,6 +57,7 @@ public class ClientHandler {
                         server.subscribe(this); // добавить пользователя в сервис обмена сообщениями
                         sendMessages(Constants.AUTH_OK);
                         server.broadcastMessage(name + " вошел в чат"); // сообщение всем авторизованным пользователям: ник вошел в чат
+                        sendMessages(server.broadcastMessageOnline());
                         return;
                     } else {
                         sendMessages("Ник уже используется");
@@ -73,13 +74,42 @@ public class ClientHandler {
         while (true) {
             String messageFromClient = inputStream.readUTF(); // читаем сообщение от клиента
             System.out.println("от " + name + ": " + messageFromClient); // вывод сообщение от клиента в консоль сервера
+            String msg = "[" + name + "]: ";
 
             // если сообщение /end: выходим из цикла
             if (messageFromClient.equals(Constants.STOP_WORD)) {
                 return;
-            } else {
-                String messageFull = "[" + name + "]: " + messageFromClient;
+            }
+
+            // если сообщение начинается с /w nick: сервер отправляет сообщение от пользователя пользователю с ником nick
+            else if (messageFromClient.startsWith(Constants.MESSAGE_LS)) {
+                // получить ник пользователя
+                String[] messageList = messageFromClient.split("\\s+");
+                String nick = messageList[1];
+                // получить сообщение: /w_nick_message
+                int lengthNick = nick.length();
+                String message = messageFromClient.substring(lengthNick+4);
+                String messageFull = msg + message;
+                server.broadcastMessageToClient(messageFull, nick); // отправляет сообщение пользователю с ником nick
+                server.broadcastMessageToClient(messageFull, this.getName()); // отправление сообщение кто написал
+            }
+
+            // если сообщение начинается с /al: сервер отправляет сообщение от клиента всем клиентам
+            else if(messageFromClient.startsWith(Constants.MESSAGE_ALL)) {
+                String message = messageFromClient.substring(4); // /al_ = 0 1 2 3, c 4 индекса сообщение
+                String messageFull = msg + message;
                 server.broadcastMessage(messageFull);
+            }
+
+            // если сообщение начинается с /online: показывает всех онлайн пользователей
+            else if(messageFromClient.equals(Constants.ONLINE)) {
+                sendMessages(server.broadcastMessageOnline());
+            }
+
+            // если сообщение не начинается с команды
+            else {
+                String messageFull = msg + messageFromClient;
+                server.broadcastMessageToClient(messageFull, this.getName());
             }
         }
     }

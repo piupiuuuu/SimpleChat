@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Обмен сообщениями между клиентами и сервером
@@ -11,6 +12,7 @@ public class ClientHandler {
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
     private String name; // ник пользователя
+    private volatile boolean isAuth;
 
     public String getName() {
         return name;
@@ -36,6 +38,23 @@ public class ClientHandler {
             });
             thread.start();
 
+            // убить через 120 сек, если не авторизовался
+            Thread killThread = new Thread(() -> {
+                try{
+                    TimeUnit.SECONDS.sleep(120);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(!isAuth) {
+                    try{
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            killThread.start();
+
         } catch (IOException e) {
             System.out.println("Проблема при создании клиента");
         }
@@ -58,6 +77,7 @@ public class ClientHandler {
                         sendMessages(Constants.AUTH_OK);
                         server.broadcastMessage(name + " вошел в чат"); // сообщение всем авторизованным пользователям: ник вошел в чат
                         sendMessages(server.broadcastMessageOnline());
+                        isAuth = true;
                         return;
                     } else {
                         sendMessages("Ник уже используется");

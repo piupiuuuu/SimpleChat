@@ -60,8 +60,9 @@ public class Client extends JFrame {
                     }
                     chatArea.append("\n");
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Fail!");
+                Runtime.getRuntime().exit(0);
             }
 
         });

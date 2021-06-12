@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -5,6 +8,7 @@ import java.util.List;
  * Простейшая реализация сервиса авторизации, которая работает на встроенном списке пользователей
  */
 public class BaseAuthService implements AuthService {
+
     private static class Entry {
         private final String nick;
         private final String login;
@@ -18,6 +22,7 @@ public class BaseAuthService implements AuthService {
     }
 
     private final List<Entry> entries;
+    private static final Logger LOGGER3 = LogManager.getLogger(MyServer.class);
 
     public BaseAuthService() {
         entries = Arrays.asList(
@@ -29,12 +34,12 @@ public class BaseAuthService implements AuthService {
 
     @Override
     public void start() {
-        System.out.println(this.getClass().getName() + " server started");
+        LOGGER3.info(Constants.LOGG_SERV + this.getClass().getName() + " запуск");
     }
 
     @Override
     public void stop() {
-        System.out.println(this.getClass().getName() + " server stopped");
+        LOGGER3.info(Constants.LOGG_SERV + this.getClass().getName() + " отключение");
     }
 
     @Override

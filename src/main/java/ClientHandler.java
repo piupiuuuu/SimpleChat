@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +16,8 @@ public class ClientHandler {
     private DataOutputStream outputStream;
     private String name; // ник пользователя
     private volatile boolean isAuth;
+    private static final Logger LOGGER2 = LogManager.getLogger(ClientHandler.class);
+
 
     public String getName() {
         return name;
@@ -32,6 +37,7 @@ public class ClientHandler {
                     readMessages();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    LOGGER2.info(Constants.LOGG_ERR, e);
                 } finally {
                     closeConnection();
                 }
@@ -44,19 +50,21 @@ public class ClientHandler {
                     TimeUnit.SECONDS.sleep(120);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    LOGGER2.info(Constants.LOGG_ERR, e);
                 }
                 if(!isAuth) {
                     try{
                         socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
+                        LOGGER2.info(Constants.LOGG_ERR, e);
                     }
                 }
             });
             killThread.start();
 
         } catch (IOException e) {
-            System.out.println("Проблема при создании клиента");
+            LOGGER2.info(Constants.LOGG_ERR, e);
         }
     }
 
@@ -76,6 +84,7 @@ public class ClientHandler {
                         server.subscribe(this); // добавить пользователя в сервис обмена сообщениями
                         sendMessages(Constants.AUTH_OK);
                         server.broadcastMessage(name + " вошел в чат"); // сообщение всем авторизованным пользователям: ник вошел в чат
+                        LOGGER2.info(Constants.LOGG_AUTH + name);
                         sendMessages(server.broadcastMessageOnline());
                         isAuth = true;
                         return;
@@ -93,7 +102,7 @@ public class ClientHandler {
     private void readMessages() throws IOException {
         while (true) {
             String messageFromClient = inputStream.readUTF(); // читаем сообщение от клиента
-            System.out.println("от " + name + ": " + messageFromClient); // вывод сообщение от клиента в консоль сервера
+            LOGGER2.info(Constants.LOGG_MESSAGE +"от " + name + " " + messageFromClient);
             String msg = "[" + name + "]: ";
 
             // если сообщение /end: выходим из цикла
@@ -140,29 +149,41 @@ public class ClientHandler {
             outputStream.writeUTF(message);
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER2.info(Constants.LOGG_ERR, e);
         }
     }
 
     public void closeConnection() {
         server.unsubscribe(this); // закрываем соединение с сервером обмена сообщениями
-        server.broadcastMessage(name + " вышел из чата"); // сообщение всем авторизованным пользователям: ник вышел из чата
+        // сообщение всем авторизованным пользователям: ник вышел из чата
+        if(name != "") {
+            server.broadcastMessage(name + " вышел из чата");
+            LOGGER2.info(Constants.LOGG_OFF + name);
+        } else {
+            server.broadcastMessage("неавторизованный пользователь вышел из чата");
+            LOGGER2.info(Constants.LOGG_OFF + "неавторизованный пользователь");
+        }
+
         //закрываем все открытые потоки
         try {
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER2.info(Constants.LOGG_ERR, e);
         }
 
         try {
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER2.info(Constants.LOGG_ERR, e);
         }
 
         try {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER2.info(Constants.LOGG_ERR, e);
         }
     }
 

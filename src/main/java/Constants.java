@@ -16,4 +16,16 @@ public class Constants {
 
     public static final String MESSAGE_ALL = "/al"; // команда отправки сообщения всем пользователям
 
+    public static final String LOGG_AUTH = "[АВТОРИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ]: ";
+
+    public static final String LOGG_ON = "[ПОДКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]";
+
+    public static final String LOGG_OFF = "[ОТКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]: ";
+
+    public static final String LOGG_ERR = "[ОШИБКА]: ";
+
+    public static final String LOGG_MESSAGE = "[СООБЩЕНИЕ]: ";
+
+    public static final String LOGG_SERV = "[СЕРВЕР]: ";
+
 }

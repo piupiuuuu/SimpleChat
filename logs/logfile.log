@@ -1,0 +1,32 @@
+
+INFO  2021-06-12 17:04:47 [main] BaseAuthService (BaseAuthService.java:37) - [СЕРВЕР]: BaseAuthService запуск
+INFO  2021-06-12 17:04:47 [main] MyServer (MyServer.java:26) - [СЕРВЕР]: ожидает подключения
+INFO  2021-06-12 17:05:20 [main] MyServer (MyServer.java:28) - [ПОДКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]
+INFO  2021-06-12 17:05:20 [main] MyServer (MyServer.java:26) - [СЕРВЕР]: ожидает подключения
+INFO  2021-06-12 17:05:34 [Thread-0] ClientHandler (ClientHandler.java:87) - [АВТОРИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ]: nick1
+INFO  2021-06-12 17:05:49 [main] MyServer (MyServer.java:28) - [ПОДКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]
+INFO  2021-06-12 17:05:49 [main] MyServer (MyServer.java:26) - [СЕРВЕР]: ожидает подключения
+INFO  2021-06-12 17:05:55 [main] MyServer (MyServer.java:28) - [ПОДКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]
+INFO  2021-06-12 17:05:55 [main] MyServer (MyServer.java:26) - [СЕРВЕР]: ожидает подключения
+INFO  2021-06-12 17:06:04 [Thread-4] ClientHandler (ClientHandler.java:87) - [АВТОРИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ]: nick3
+INFO  2021-06-12 17:06:33 [Thread-0] ClientHandler (ClientHandler.java:105) - [СООБЩЕНИЕ]: от nick1 /w nick3 111
+INFO  2021-06-12 17:06:47 [Thread-4] ClientHandler (ClientHandler.java:105) - [СООБЩЕНИЕ]: от nick3 /al 222
+INFO  2021-06-12 17:07:49 [Thread-2] ClientHandler (ClientHandler.java:40) - [ОШИБКА]: 
+java.net.SocketException: Socket closed
+	at sun.nio.ch.NioSocketImpl.endRead(NioSocketImpl.java:248) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:327) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350) ~[?:?]
+	at sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803) ~[?:?]
+	at java.net.Socket$SocketInputStream.read(Socket.java:976) ~[?:?]
+	at java.net.Socket$SocketInputStream.read(Socket.java:971) ~[?:?]
+	at java.io.DataInputStream.readUnsignedShort(DataInputStream.java:343) ~[?:?]
+	at java.io.DataInputStream.readUTF(DataInputStream.java:595) ~[?:?]
+	at java.io.DataInputStream.readUTF(DataInputStream.java:570) ~[?:?]
+	at ClientHandler.authentication(ClientHandler.java:76) ~[classes/:?]
+	at ClientHandler.lambda$new$0(ClientHandler.java:36) ~[classes/:?]
+	at java.lang.Thread.run(Thread.java:831) [?:?]
+INFO  2021-06-12 17:07:49 [Thread-2] ClientHandler (ClientHandler.java:164) - [ОТКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]: неавторизованный пользователь
+INFO  2021-06-12 17:08:05 [Thread-0] ClientHandler (ClientHandler.java:105) - [СООБЩЕНИЕ]: от nick1 /end
+INFO  2021-06-12 17:08:05 [Thread-0] ClientHandler (ClientHandler.java:161) - [ОТКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]: nick1
+INFO  2021-06-12 17:08:12 [Thread-4] ClientHandler (ClientHandler.java:105) - [СООБЩЕНИЕ]: от nick3 /end
+INFO  2021-06-12 17:08:12 [Thread-4] ClientHandler (ClientHandler.java:161) - [ОТКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЯ]: nick3

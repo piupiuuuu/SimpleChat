@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Обмен сообщениями между клиентами и сервером
@@ -26,7 +26,8 @@ public class ClientHandler {
             this.outputStream = new DataOutputStream(socket.getOutputStream());
             this.name = "";
 
-            Thread thread = new Thread(() -> {
+            ExecutorService service = Executors.newFixedThreadPool(2);
+            service.submit(() -> {
                 try {
                     authentication();
                     readMessages();
@@ -36,10 +37,8 @@ public class ClientHandler {
                     closeConnection();
                 }
             });
-            thread.start();
 
-            // убить через 120 сек, если не авторизовался
-            Thread killThread = new Thread(() -> {
+            service.submit(() -> {
                 try{
                     TimeUnit.SECONDS.sleep(120);
                 } catch (InterruptedException e) {
@@ -53,7 +52,8 @@ public class ClientHandler {
                     }
                 }
             });
-            killThread.start();
+
+            service.shutdown();
 
         } catch (IOException e) {
             System.out.println("Проблема при создании клиента");

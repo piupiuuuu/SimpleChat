@@ -126,6 +126,25 @@ public class ClientHandler {
                 sendMessages(server.broadcastMessageOnline());
             }
 
+            else if(messageFromClient.startsWith(Constants.CHANGE_NICK)) {
+                // получить новый ник
+                String[] messageList = messageFromClient.split("\\s+");
+                String newNick = messageList[1];
+
+                // проверить, что данный ник можно использовать
+                String messageFull;
+                if(server.getAuthService().isNickFree(newNick)) {
+                    String temp = name;
+                    server.getAuthService().updateNick(newNick, name);
+                    name = newNick;
+                    messageFull = temp + " сменил ник на " + name;
+                    server.broadcastMessage(messageFull); // отправить всем авторизованным пользователем, сообщение о смене ника пользователя
+                } else {
+                    messageFull = "Данный ник занят";
+                    server.broadcastMessageToClient(messageFull, this.getName());
+                }
+            }
+
             // если сообщение не начинается с команды
             else {
                 String messageFull = msg + messageFromClient;

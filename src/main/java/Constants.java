@@ -16,4 +16,6 @@ public class Constants {
 
     public static final String MESSAGE_ALL = "/al"; // команда отправки сообщения всем пользователям
 
+    public static final String CHANGE_NICK = "/change"; // команда смены ника
+
 }

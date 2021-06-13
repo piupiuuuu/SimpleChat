@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class MyServer {
 
     public MyServer() {
         try (ServerSocket server = new ServerSocket(Constants.PORT)) {
-            authService = new BaseAuthService();
+            authService = new DataBase();
             authService.start();
             clients = new ArrayList<>();
 
@@ -23,7 +24,7 @@ public class MyServer {
                 System.out.println("Клиент поключился");
                 new ClientHandler(this, socket);
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         } finally {
             if (authService != null) {
